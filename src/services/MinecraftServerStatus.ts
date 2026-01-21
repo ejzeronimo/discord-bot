@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const baseUrl = "http://mcapi.us/server/status";
+const baseUrl = "https://api.mcstatus.io/v2";
 
 var serverList: ServerConfig[] = JSON.parse(process.env.MINECRAFT_SERVER_LIST ?? "");
 var minecraftQuery: NodeJS.Timeout;
@@ -31,7 +31,7 @@ function generateEmbed() {
     if (playerList.length > 0) {
         servers.push({
             name: "Players",
-            value: playerList.map(player => player.name).join("\n"),
+            value: playerList.map(player => player.name_clean).join("\n"),
             inline: false
         });
     }
@@ -53,15 +53,15 @@ export async function checkMinecraftServerStatus(bot: Client) {
         serverList[idx].playerCount = 0;
 
         try {
-            const response = await fetch(baseUrl + "?ip=" + serverList[idx].ip);
+            const response = await fetch(baseUrl + "/status/java/" + serverList[idx].ip);
             if (!response.ok) {
                 // failure to get data
             }
 
             const result = await response.json() as ServerInfo;
 
-            serverList[idx].playerCount = result.players.now;
-            serverList[idx].players = result.players.sample;
+            serverList[idx].playerCount = result.players.online;
+            serverList[idx].players = result.players.list;
         } catch {
             console.log("failed to check mc server");
         }
