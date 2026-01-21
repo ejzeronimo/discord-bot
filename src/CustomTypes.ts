@@ -6,12 +6,11 @@ export type Command = {
 }
 
 export type ServerInfo = {
-    status: string,
     online: boolean,
     players: {
         max: number,
-        now: number,
-        sample: MinecraftUser[]
+        online: number,
+        list: MinecraftUser[]
     }
 }
 
@@ -24,6 +23,8 @@ export type ServerConfig = {
 }
 
 export type MinecraftUser = {
-    name: string, 
-    id: string
+    uuid: string, 
+    name_raw: string,
+    name_clean: string,
+    name_html: string
 }
